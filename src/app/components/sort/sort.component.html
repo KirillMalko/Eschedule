@@ -1,0 +1,11 @@
+<app-search (onChanged)="shareArtefact($event)"></app-search>
+<section class="example-section">
+    <app-weeks-sort [weekNumber]="selectedWeek" (onChanged)="shareWeek($event)"></app-weeks-sort>
+    <app-subgroup-sort (onChanged)="shareSubgroup($event)"></app-subgroup-sort>
+    <app-type-sort (onChanged)="shareType($event)"></app-type-sort>
+    <app-datepicker   (weekNumberChanged)="onWeekNumberChanged($event)"></app-datepicker>
+
+    <button (click)="searchSchedule()"></button>
+</section>
+
+

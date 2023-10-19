@@ -1,0 +1,24 @@
+<span class="example-list-section">
+  <mat-label>Неделя:</mat-label>
+
+  <span class="check-example">
+    <p *ngFor="let subtask of task.subtasks">
+      <mat-checkbox [(ngModel)]="subtask.completed"
+                    [color]="subtask.color"
+                    (ngModelChange)="updateAllComplete()"
+                    [ngClass]="{'active-checkbox': subtask.completed}">
+        {{subtask.name}}
+      </mat-checkbox>
+    </p>
+    <mat-checkbox
+            (click)="updateAllComplete()"
+            [(ngModel)]="task.completed"
+            [checked]="allComplete"
+            [color]="task.color"
+            [indeterminate]="someComplete()"
+            (change)="setAll($event.checked)"
+            [ngClass]="{'active-checkbox': task.completed}">
+      {{task.name}}
+    </mat-checkbox>
+  </span>
+</span>

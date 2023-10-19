@@ -1,0 +1,36 @@
+<!-- schedule-table.component.html -->
+<table class="schedule-table">
+  <thead>
+  <tr>
+    <th>Время</th>
+    <th *ngFor="let day of daysOfWeek">{{ day }}</th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-container *ngFor="let timeSlot of timeSlots">
+    <tr>
+      <td>{{ timeSlot }}</td>
+      <td *ngFor="let day of daysOfWeek">
+        {{ getScheduleForTimeAndDay(day, timeSlot) }}
+      </td>
+    </tr>
+  </ng-container>
+  </tbody>
+</table>
+
+
+
+
+<!--User name: <input [(ngModel)]="searchingField" type="text">-->
+
+<!--<button (click)="searchSchedule()">SearchSchedule</button>-->
+
+<!--<div *ngIf="response">-->
+
+
+<!--  <ul>-->
+<!--    <li *ngFor="let item of response.data.schedule">{{item.subject.time}} - {{item.subject.time}}: {{item.subject.abbreviated}}</li>-->
+<!--  </ul>-->
+<!--&lt;!&ndash;  [field1]: {{response.type}}&ndash;&gt;-->
+<!--</div>-->
+<!--<div>Данные от Child1: {{ receivedGroup }}</div>-->

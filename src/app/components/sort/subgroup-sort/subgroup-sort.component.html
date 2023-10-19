@@ -1,0 +1,24 @@
+<span class="example-list-section">
+          <mat-label>Подгруппа:</mat-label>
+
+    <span class="check-example">
+
+
+<p *ngFor="let subtask of task.subtasks">
+        <mat-checkbox [(ngModel)]="subtask.completed"
+                      [color]="subtask.color"
+                      (ngModelChange)="updateAllComplete()">
+          {{subtask.name}}
+        </mat-checkbox>
+      </p>
+                <mat-checkbox
+                        (click)="updateAllComplete()"
+                        [(ngModel)]="task.completed"
+                        [checked]="allComplete"
+                        [color]="task.color"
+                        [indeterminate]="someComplete()"
+                        (change)="setAll($event.checked)">
+                          {{task.name}}
+        </mat-checkbox>
+    </span>
+</span>

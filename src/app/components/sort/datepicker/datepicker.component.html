@@ -1,0 +1,21 @@
+<div class="date-picker-container">
+    <div class="date-navigation">
+        <button mat-icon-button (click)="previousWeek(false)">
+            <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+        <div class="date-range" (click)="openCalendar()">
+            <span class="date-label">{{ formatStartDate() }} - {{ formatEndDate() }}</span>
+        </div>
+        <button mat-icon-button (click)="nextWeek(true)">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+    </div>
+    <input
+            type="text"
+            [matDatepicker]="calendar"
+            (dateChange)="onDateSelect($event)"
+            [(ngModel)]="selectedDate"
+            class="transparent-input"
+    >
+    <mat-datepicker #calendar></mat-datepicker>
+</div>

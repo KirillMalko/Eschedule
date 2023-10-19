@@ -1,0 +1,21 @@
+
+<div class="container">
+<h2>Расписание для студента группы {{myControl.value}}</h2>
+
+<form class="example-form"  (keyup)="searching()" (click)="searching()">
+  <mat-form-field class="example-full-width">
+    <mat-label>Введите ФИО преподавателя или номер группы</mat-label>
+    <input type="text"
+           placeholder="Выбери вариант"
+           aria-label="Введите ФИО преподавателя или номер группы"
+           matInput
+           [formControl]="myControl"
+           [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (click)="searching()" >
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+</div>
