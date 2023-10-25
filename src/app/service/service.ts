@@ -10,9 +10,18 @@ export class ScheduleService {
 
   constructor(private http: HttpClient) {}
 
-  getScheduleForGroup(group: string, weekdays: number[]): Observable<any> {
+  getSchedule(group: string, weekdays: number[]): Observable<any> {
+    // http://schedule.elementfx.com/api/v1/schedule/group?
+    // group=${this.selectedArtefact}
+    // &subgroup=${this.selectedSubgroup}
+    // &type=${this.selectedType}
+    // &weeks%5B%5D=${this.selectedWeek}
+    // &weekdays%5B%5D=${this.weekday}
     const url = `${this.apiUrl}?group=${group}&weekdays[]=${weekdays.join('&weekdays[]=')}`;
+    console.log(group + " " + weekdays)
+    return this.http.get<any[]>(url);
 
-    return this.http.get(url);
   }
+
+
 }

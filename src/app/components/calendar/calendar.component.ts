@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ScheduleService } from '../../service/service';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -7,17 +7,57 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent {
-  @Input() daysOfWeek: string[] | undefined; // Массив дней недели (["Пн", "Вт", ...])
-  @Input() timeSlots: string[] | undefined; // Массив временных слотов (["09:00 - 10:30", "10:45 - 12:15", ...])
-  @Input() scheduleData: any[] | undefined; // Данные расписания, возможно, двумерный массив
+export class CalendarComponent implements OnInit {
+  @Input() daysOfWeek: string[] | undefined;
+  @Input() timeSlots: string[] | undefined;
+  scheduleData: any[] | undefined;
+  tableData: any[][] = [];
 
-  getScheduleForTimeAndDay(day: string, timeSlot: string): string {
-    // Здесь вам нужно извлечь данные из scheduleData в зависимости от дня и времени.
-    // Например, можно пройти по двумерному массиву или использовать другую структуру данных.
+  constructor(private scheduleService: ScheduleService) {}
 
-    // Возвращайте данные для конкретного времени и дня.
-    return 'Ваше расписание';
+  ngOnInit() {
+    this.fetchScheduleData();
   }
 
+  fetchScheduleData() {
+    this.scheduleService.getSchedule("ИП291", [1]).subscribe((data: any) => {
+      const schedule = data.data.schedule;
+      this.scheduleData = schedule;
+      console.log(this.scheduleData)
+      this.generateTableData();
+    });
+  }
+
+  generateTableData() {
+    // @ts-ignore
+    for (let i = 0; i < this.timeSlots.length; i++) {
+      const rowData = [];
+      // @ts-ignore
+      for (let j = 0; j < this.daysOfWeek.length; j++) {
+        // @ts-ignore
+        const day = this.daysOfWeek[j];
+        // @ts-ignore
+        const timeSlot = this.timeSlots[i];
+        const schedule = this.getScheduleForTimeAndDay(day, timeSlot);
+        rowData.push(schedule);
+      }
+      this.tableData.push(rowData);
+    }
+  }
+
+  getScheduleForTimeAndDay(day: string, timeSlot: string): string {
+    if (this.scheduleData) {
+      const schedule = this.scheduleData.find(
+        item => item.weekday.name === day && item.time.start === timeSlot
+      );
+      if (schedule) {
+        const { auditory, subject, teacher, type } = schedule;
+        const subjectFull = subject ? subject.full : '';
+        const teacherFullName = teacher ? teacher.fullName : '';
+        const typeFull = type ? type.full : '';
+        return `${auditory}, ${subjectFull}, ${teacherFullName}, ${typeFull}`;
+      }
+    }
+    return 'Нет занятий';
+  }
 }
