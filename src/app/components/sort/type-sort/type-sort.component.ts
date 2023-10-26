@@ -12,9 +12,9 @@ export class TypeSortComponent {
     completed: false,
     color: 'primary',
     subtasks: [
-      {name: 'ЛК', completed: false, color: 'accent'},
-      {name: 'ЛР', completed: false, color: 'accent'},
-      {name: 'ПЗ', completed: false, color: 'accent'},
+      {name: 'ЛК', completed: true, color: 'accent'},
+      {name: 'ЛР', completed: true, color: 'accent'},
+      {name: 'ПЗ', completed: true, color: 'accent'},
     ],
   };
   selectedType: string[] = [];

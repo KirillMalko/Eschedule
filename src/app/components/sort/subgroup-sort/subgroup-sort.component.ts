@@ -13,7 +13,7 @@ export class SubgroupSortComponent {
     completed: false,
     color: 'primary',
     subtasks: [
-      {name: '1', completed: false, color: 'accent'},
+      {name: '1', completed: true, color: 'accent'},
       {name: '2', completed: false, color: 'accent'}
     ],
   };

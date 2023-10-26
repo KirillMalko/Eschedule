@@ -1,18 +1,29 @@
-<table>
+<table class="schedule-table">
   <thead>
   <tr>
-    <th></th>
+    <th>Время</th>
     <th *ngFor="let day of daysOfWeek">{{ day }}</th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let timeSlot of timeSlots">
-    <td>{{ timeSlot }}</td>
-    <td *ngFor="let day of daysOfWeek">{{ getScheduleForTimeAndDay(day, timeSlot) }}</td>
+  <tr *ngFor="let timeStart of timeStart; let i = index;">
+    <td>{{ timeStart }} - {{ timeEnd?.at(i) }}</td>
+    <td *ngFor="let day of daysOfWeek" [ngClass]="{ 'no-classes': !getScheduleForTimeAndDay(day, timeStart), 'classes' :  getScheduleForTimeAndDay(day, timeStart)}">
+      <ng-container *ngIf="getScheduleForTimeAndDay(day, timeStart) as schedule">
+        <div class="schedule-details">
+          <div class="subject">{{ schedule.subjectAbbr }}({{ schedule.typeAbbr }})</div>
+          <div class="auditory">ауд. {{ schedule.auditory }}</div>
+          <div class="teacher">{{ schedule.teacherFullName }}</div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!getScheduleForTimeAndDay(day, timeStart)">
+        <div class="no-classes-text">No classes</div>
+      </ng-container>
+    </td>
   </tr>
   </tbody>
 </table>
-
+<button (click)="fetchScheduleData()"></button>
 
 
 

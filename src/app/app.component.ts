@@ -7,6 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'eSchedule';
-  yourScheduleData: any;
+  dataFromSort: any;
+  onSortedData(data: any) {
+    this.dataFromSort = data;
+  }
 
 }

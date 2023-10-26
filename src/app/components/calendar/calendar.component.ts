@@ -9,18 +9,30 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class CalendarComponent implements OnInit {
   @Input() daysOfWeek: string[] | undefined;
-  @Input() timeSlots: string[] | undefined;
+  @Input() timeStart: string[] | undefined;
+  @Input() timeEnd: string[] | undefined;
+  @Input() receivedData: any;
+
+
   scheduleData: any[] | undefined;
   tableData: any[][] = [];
+  private result: object | undefined;
 
   constructor(private scheduleService: ScheduleService) {}
 
   ngOnInit() {
     this.fetchScheduleData();
+    console.log(this.receivedData)
   }
 
   fetchScheduleData() {
-    this.scheduleService.getSchedule("ИП291", [1]).subscribe((data: any) => {
+    // // @ts-ignore
+    // console.log( this.receivedData.group +  this.receivedData.subgroup  +   this.receivedData.type + this.receivedData.weeks +  this.receivedData.weekdays)
+
+    this.scheduleService.getSchedule(
+          this.receivedData[0], this.receivedData[1],
+      this.receivedData[2], this.receivedData[3],
+      this.receivedData[4]).subscribe((data: any) => {
       const schedule = data.data.schedule;
       this.scheduleData = schedule;
       console.log(this.scheduleData)
@@ -30,14 +42,14 @@ export class CalendarComponent implements OnInit {
 
   generateTableData() {
     // @ts-ignore
-    for (let i = 0; i < this.timeSlots.length; i++) {
+    for (let i = 0; i < this.timeStart.length; i++) {
       const rowData = [];
       // @ts-ignore
       for (let j = 0; j < this.daysOfWeek.length; j++) {
         // @ts-ignore
         const day = this.daysOfWeek[j];
         // @ts-ignore
-        const timeSlot = this.timeSlots[i];
+        const timeSlot = this.timeStart[i];
         const schedule = this.getScheduleForTimeAndDay(day, timeSlot);
         rowData.push(schedule);
       }
@@ -45,7 +57,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  getScheduleForTimeAndDay(day: string, timeSlot: string): string {
+  getScheduleForTimeAndDay(day: string, timeSlot: string): any {
     if (this.scheduleData) {
       const schedule = this.scheduleData.find(
         item => item.weekday.name === day && item.time.start === timeSlot
@@ -53,11 +65,22 @@ export class CalendarComponent implements OnInit {
       if (schedule) {
         const { auditory, subject, teacher, type } = schedule;
         const subjectFull = subject ? subject.full : '';
+        const subjectAbbr = subject ? subject.abbreviated : '';
         const teacherFullName = teacher ? teacher.fullName : '';
         const typeFull = type ? type.full : '';
-        return `${auditory}, ${subjectFull}, ${teacherFullName}, ${typeFull}`;
+        const typeAbbr = type ? type.abbreviated : '';
+
+        const result = {
+          subjectAbbr,
+          auditory,
+          subjectFull,
+          teacherFullName,
+          typeFull,
+          typeAbbr
+        };
+        return result;
       }
     }
-    return 'Нет занятий';
+    return null;
   }
 }
