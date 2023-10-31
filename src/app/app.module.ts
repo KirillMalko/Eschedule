@@ -18,7 +18,6 @@ import {MatTableModule} from '@angular/material/table';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import {HttpClientModule} from "@angular/common/http";
 import {ScheduleService} from "./service/service";
-import {DataSharingService} from './service/data-sharing';
 import { SortComponent } from './components/sort/sort.component'
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { WeeksSortComponent } from './components/sort/weeks-sort/weeks-sort.component';
@@ -64,7 +63,7 @@ import {MatNativeDateModule} from "@angular/material/core";
     MatDatepickerModule,
     MatFormFieldModule, MatInputModule, MatNativeDateModule, MatDatepickerModule
   ],
-  providers: [ScheduleService, DataSharingService,WeeksSortComponent, DatePipe],
+  providers: [ScheduleService,WeeksSortComponent, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Week} from "../../../models/weeks";
-import {DataSharingService} from "../../../service/data-sharing";
 import {DateSelectionService} from "../../../service/date-selection-service.service";
+import {ScheduleService} from "../../../service/service";
 
 @Component({
   selector: 'app-weeks-sort',
@@ -13,7 +13,11 @@ export class WeeksSortComponent {
 
   selectedDate: Date | undefined;
   currentWeek: number | undefined
-  constructor(private dateSelectionService: DateSelectionService) {}
+
+  constructor(private dateSelectionService: DateSelectionService,
+              private scheduleService: ScheduleService) {
+  }
+
   task: Week = {
     id: 0,
     name: "Все",
@@ -29,14 +33,14 @@ export class WeeksSortComponent {
   selectedWeek: string[] = [];
 
   allComplete: boolean = false;
-@Output() onChanged = new EventEmitter<string>();
+
 
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
     // @ts-ignore
     this.selectedWeek = this.task.subtasks.filter(t => t.completed).map(t => t.name);
     // @ts-ignore
-    this.onChanged.emit(this.selectedWeek);
+    this.scheduleService.setWeeks(this.selectedWeek);
 
     // console.log(this.selectedWeek)
   }
@@ -55,6 +59,7 @@ export class WeeksSortComponent {
     }
     this.task.subtasks.forEach(t => (t.completed = completed));
   }
+
   getCurrentWeekNumber(): number {
     const today = new Date();
     const september1st = new Date(today.getFullYear(), 8, 1); // 8 - сентябрь (месяцы в JavaScript начинаются с 0)
@@ -63,9 +68,9 @@ export class WeeksSortComponent {
     const currentWeek = Math.floor(daysPassed / 7) + 1; // +1 для нумерации недель с 1
     let currentWeekResult = Math.min(4, Math.max(1, currentWeek));
     this.task.subtasks?.filter((el) => {
-      if(el.id == currentWeekResult){
+      if (el.id == currentWeekResult) {
         el.completed = true;
-        el.color ='warn';
+        el.color = 'warn';
         this.updateAllComplete();
       }
     })
@@ -77,7 +82,7 @@ export class WeeksSortComponent {
 
   ngOnInit() {
     // Вызываем метод для определения текущей недели при инициализации компонента
-  this.getCurrentWeekNumber();
+    this.getCurrentWeekNumber();
     console.log(this.weekNumber)
     this.selectedDate = this.dateSelectionService.selectedDate;
     this.currentWeek = this.dateSelectionService.currentWeek;

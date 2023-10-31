@@ -1,43 +1,51 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { ScheduleService } from '../../service/service';
 import { MatTableDataSource } from '@angular/material/table';
+import {Subscription} from "rxjs";
+import {group} from "@angular/animations";
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
+  fullUrl!: string;
+  private subscription!: Subscription;
+
   @Input() daysOfWeek: string[] | undefined;
   @Input() timeStart: string[] | undefined;
   @Input() timeEnd: string[] | undefined;
-  @Input() receivedData: any;
-
+  @Input() receivedData!: any[];
 
   scheduleData: any[] | undefined;
   tableData: any[][] = [];
-  private result: object | undefined;
 
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(private scheduleService: ScheduleService) { }
 
   ngOnInit() {
-    this.fetchScheduleData();
-    console.log(this.receivedData)
+    this.subscription = this.scheduleService.fullUrl$.subscribe(
+      (group: string) => {
+        this.fullUrl = group;
+        // Вызов функции или выполнение нужных действий при изменении значения `_group`
+        this.fetchScheduleData();
+      }
+    );
+
+
+
+
+    console.log(this.receivedData);
   }
 
   fetchScheduleData() {
-    // // @ts-ignore
-    // console.log( this.receivedData.group +  this.receivedData.subgroup  +   this.receivedData.type + this.receivedData.weeks +  this.receivedData.weekdays)
-
-    this.scheduleService.getSchedule(
-          this.receivedData[0], this.receivedData[1],
-      this.receivedData[2], this.receivedData[3],
-      this.receivedData[4]).subscribe((data: any) => {
-      const schedule = data.data.schedule;
-      this.scheduleData = schedule;
-      console.log(this.scheduleData)
-      this.generateTableData();
-    });
+    this.scheduleService.getSchedule()
+      .subscribe((data: any) => {
+        const schedule = data.data.schedule;
+        this.scheduleData = schedule;
+        console.log(this.scheduleData);
+        this.generateTableData();
+      });
   }
 
   generateTableData() {
@@ -60,15 +68,16 @@ export class CalendarComponent implements OnInit {
   getScheduleForTimeAndDay(day: string, timeSlot: string): any {
     if (this.scheduleData) {
       const schedule = this.scheduleData.find(
-        item => item.weekday.name === day && item.time.start === timeSlot
+        (item: any) =>
+          item.weekday.name === day && item.time.start === timeSlot
       );
       if (schedule) {
         const { auditory, subject, teacher, type } = schedule;
-        const subjectFull = subject ? subject.full : '';
-        const subjectAbbr = subject ? subject.abbreviated : '';
-        const teacherFullName = teacher ? teacher.fullName : '';
-        const typeFull = type ? type.full : '';
-        const typeAbbr = type ? type.abbreviated : '';
+        const subjectFull = subject ? subject.full : "";
+        const subjectAbbr = subject ? subject.abbreviated : "";
+        const teacherFullName = teacher ? teacher.fullName : "";
+        const typeFull = type ? type.full : "";
+        const typeAbbr = type ? type.abbreviated : "";
 
         const result = {
           subjectAbbr,
@@ -76,11 +85,16 @@ export class CalendarComponent implements OnInit {
           subjectFull,
           teacherFullName,
           typeFull,
-          typeAbbr
+          typeAbbr,
         };
         return result;
       }
     }
     return null;
   }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 }
+

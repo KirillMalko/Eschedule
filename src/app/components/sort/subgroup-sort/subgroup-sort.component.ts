@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {Task} from "../../../models/weeks";
+import {ScheduleService} from "../../../service/service";
 
 
 @Component({
@@ -13,19 +14,21 @@ export class SubgroupSortComponent {
     completed: false,
     color: 'primary',
     subtasks: [
-      {name: '1', completed: true, color: 'accent'},
+      {name: '1', completed: false, color: 'accent'},
       {name: '2', completed: false, color: 'accent'}
     ],
   };
   selectedSubgroup: string[] = [];
   allComplete: boolean = false;
-  @Output() onChanged = new EventEmitter<string>();
+
+  constructor(private scheduleService: ScheduleService) { }
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
     // @ts-ignore
     this.selectedSubgroup = this.task.subtasks.filter(t => t.completed).map(t => t.name);
     // @ts-ignore
-    this.onChanged.emit(this.selectedSubgroup);
+    this.scheduleService.setSubgroup(this.selectedSubgroup)
+
 
   }
 

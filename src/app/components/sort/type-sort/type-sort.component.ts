@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {Task} from "../../../models/weeks";
+import {ScheduleService} from "../../../service/service";
 
 @Component({
   selector: 'app-type-sort',
@@ -19,13 +20,13 @@ export class TypeSortComponent {
   };
   selectedType: string[] = [];
   allComplete: boolean = false;
-@Output() onChanged  = new EventEmitter<string>();
+  constructor(private scheduleService: ScheduleService) { }
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
     // @ts-ignore
     this.selectedType = this.task.subtasks.filter(t => t.completed).map(t => t.name);
     // @ts-ignore
-    this.onChanged.emit(this.selectedType);
+    this.scheduleService.setType(this.selectedType);
   }
 
   someComplete(): boolean {
