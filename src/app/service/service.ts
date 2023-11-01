@@ -17,7 +17,7 @@ export class ScheduleService {
   getSubgroup(): number | undefined {
     return this._subgroup;
   }
-  getWeeks(): number[] | undefined {
+  getWeeks(): string[] | undefined {
     return this._weeks;
   }
   getWeekdays(): number[] {
@@ -29,14 +29,16 @@ export class ScheduleService {
   private _group!: string;
   private _subgroup: number| undefined;
   private _type: string[]| undefined;
-  private _weeks: number[] | undefined;
+  private _weeks: string[] | undefined;
   private _weekdays: number[] = [1,2,3,4,5];
 
   constructor(private http: HttpClient) {
   }
-  setWeeks(value: number[] | undefined) {
-    this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
+
+  setWeeks(value: string[]) {
     this._weeks = value;
+    this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
+
   }
   setType(value: string[] | undefined) {
     this._type = value;
@@ -51,19 +53,25 @@ export class ScheduleService {
     this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
   }
 
-  setSchedule(group: string, subgroup: number | undefined, type: string[] | undefined, weeks: number[] | undefined, weekdays: number[]){
-  console.log('group: ' + this._group + 'subgroup: ' + this._subgroup, 'type: '  + this._type + 'Weeks: ' + this._weeks, 'Weekdays: ' + this._weekdays)
-  const baseUrl = 'https://schedule.elementfx.com/api/v1/schedule/group';
-  const encodedGroup = encodeURIComponent(group ? group : '');
-  const encodedType = Array.isArray(type) && type.length > 0 ? type.map(t => `type=${encodeURIComponent(t)}`).join('&') : 'type=%D0%9B%D0%9A';
-  const encodedWeeks = Array.isArray(weeks) && weeks.length > 0 ? weeks.map(w => `weeks[]=${encodeURIComponent(w.toString())}`).join('&') : 'weeks[]=1';
-  const encodedWeekdays = Array.isArray(weekdays) && weekdays.length > 0 ? weekdays.map(d => `weekdays[]=${encodeURIComponent(d.toString())}`).join('&') : '';
+  setSchedule(group: string, subgroup: number | undefined, type: string[] | undefined, weeks: string[] | undefined, weekdays: number[]){
+    const baseUrl = 'https://schedule.elementfx.com/api/v1/schedule/group';
+    const encodedGroup = encodeURIComponent(group ? group : 'СП091');
+    const encodedType = Array.isArray(type) && type.length > 0 ? `type=${encodeURIComponent(type.join(', '))}` : '';    const encodedWeeks = Array.isArray(weeks) && weeks.length > 0 ? weeks.map(w => `weeks[]=${encodeURIComponent(w.toString())}`).join('&') : '';
+    const encodedWeekdays = Array.isArray(weekdays) && weekdays.length > 0 ? weekdays.map(d => `weekdays[]=${encodeURIComponent(d.toString())}`).join('&') : '';
 
-    this.dataUrl.next(`${baseUrl}?group=${encodedGroup}&${encodedType}&${encodedWeeks}&${encodedWeekdays}`);
+    let url = `${baseUrl}?group=${encodedGroup}`;
+    if (encodedType) {
+      url += `&${encodedType}`;
+    }
+    if (encodedWeeks) {
+      url += `&${encodedWeeks}`;
+    }
+    if (encodedWeekdays) {
+      url += `&${encodedWeekdays}`;
+    }
 
-
-
-}
+    this.dataUrl.next(url);
+  }
   getSchedule() {
     return this.http.get(this.dataUrl.value);
   }

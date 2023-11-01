@@ -28,7 +28,7 @@ export class SortComponent implements OnInit {
     setTimeout(() => {
       this.transferData(this.arrSort);
       console.log(this.arrSort[0]);
-    }, 50);
+    }, 0);
   }
 
   shareWeek(e: any) {

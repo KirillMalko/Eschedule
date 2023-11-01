@@ -2,6 +2,7 @@ import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
 import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { format, startOfWeek, endOfWeek, addDays, parse } from 'date-fns';
 import { DateSelectionService } from "../../../service/date-selection-service.service";
+import {ScheduleService} from "../../../service/service";
 
 @Component({
   selector: 'app-datepicker',
@@ -29,7 +30,7 @@ export class DatepickerComponent {
     return format(this.endDate, 'dd MMMM yyyy');
   }
 
-  constructor(private dateSelectionService: DateSelectionService) {
+  constructor(private dateSelectionService: DateSelectionService, private scheduleService: ScheduleService) {
     const today = new Date();
     this.startDate = startOfWeek(today);
     this.endDate = endOfWeek(today);
@@ -37,7 +38,8 @@ export class DatepickerComponent {
 
   onDateSelect(selectedDate: MatDatepickerInputEvent<Date>) {
     const parsedDate = selectedDate.value;
-
+    // @ts-ignore
+    this.dateSelectionService.setGroup(selectedDate.value)
     if (parsedDate) {
       this.selectedDate = parsedDate;
       this.startDate = startOfWeek(parsedDate);

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Task} from "../../../models/weeks";
 import {ScheduleService} from "../../../service/service";
 
@@ -21,7 +21,9 @@ export class SubgroupSortComponent {
   selectedSubgroup: string[] = [];
   allComplete: boolean = false;
 
-  constructor(private scheduleService: ScheduleService) { }
+  constructor(private scheduleService: ScheduleService) {
+
+  }
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
     // @ts-ignore
@@ -46,4 +48,6 @@ export class SubgroupSortComponent {
     }
     this.task.subtasks.forEach(t => (t.completed = completed));
   }
+
+
 }

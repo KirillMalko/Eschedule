@@ -24,18 +24,19 @@ export class CalendarComponent implements OnInit, OnDestroy {
   constructor(private scheduleService: ScheduleService) { }
 
   ngOnInit() {
-    this.subscription = this.scheduleService.fullUrl$.subscribe(
-      (group: string) => {
-        this.fullUrl = group;
-        // Вызов функции или выполнение нужных действий при изменении значения `_group`
-        this.fetchScheduleData();
-      }
-    );
+    setTimeout( () =>{
+      this.subscription = this.scheduleService.fullUrl$.subscribe(
+        (group: string) => {
+          this.fullUrl = group;
+          // Вызов функции или выполнение нужных действий при изменении значения `_group`
+          this.fetchScheduleData();
+        })
+    }, 0);
 
 
 
 
-    console.log(this.receivedData);
+
   }
 
   fetchScheduleData() {
@@ -43,7 +44,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .subscribe((data: any) => {
         const schedule = data.data.schedule;
         this.scheduleData = schedule;
-        console.log(this.scheduleData);
         this.generateTableData();
       });
   }
