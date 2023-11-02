@@ -11,18 +11,29 @@ import {ScheduleService} from "../../../service/service";
 export class SubgroupSortComponent {
   task: Task = {
     name: "Все",
-    completed: false,
+    completed: true,
     color: 'primary',
     subtasks: [
       {name: '1', completed: false, color: 'accent'},
       {name: '2', completed: false, color: 'accent'}
     ],
   };
-  selectedSubgroup: string[] = [];
+  selectedSubgroup: string = '';
   allComplete: boolean = false;
 
   constructor(private scheduleService: ScheduleService) {
 
+  }
+  updateSelectedType(name: string) {
+    // @ts-ignore
+    this.task.subtasks.forEach(subtask => {
+      if (subtask.name !== name) {
+        subtask.completed = false;
+      }
+    });
+
+    this.selectedSubgroup = name;
+    this.scheduleService.setSubgroup(this.selectedSubgroup);
   }
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
@@ -38,7 +49,8 @@ export class SubgroupSortComponent {
     if (this.task.subtasks == null) {
       return false;
     }
-    return this.task.subtasks.filter(t => t.completed).length > 0 && !this.allComplete;
+
+    return this.task.subtasks.filter(t => t.completed).length == 0 && !this.allComplete;
   }
 
   setAll(completed: boolean) {

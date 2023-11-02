@@ -18,9 +18,20 @@ export class TypeSortComponent {
       {name: 'ПЗ', completed: false, color: 'accent'},
     ],
   };
-  selectedType: string[] = [];
+  selectedType: string = '';
   allComplete: boolean = false;
   constructor(private scheduleService: ScheduleService) { }
+  updateSelectedType(name: string) {
+    // @ts-ignore
+    this.task.subtasks.forEach(subtask => {
+      if (subtask.name !== name) {
+        subtask.completed = false;
+      }
+    });
+
+    this.selectedType = name;
+    this.scheduleService.setType(this.selectedType);
+  }
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
     // @ts-ignore
@@ -33,7 +44,8 @@ export class TypeSortComponent {
     if (this.task.subtasks == null) {
       return false;
     }
-    return this.task.subtasks.filter(t => t.completed).length > 0 && !this.allComplete;
+
+    return this.task.subtasks.filter(t => t.completed).length == 0 && !this.allComplete;
   }
 
   setAll(completed: boolean) {

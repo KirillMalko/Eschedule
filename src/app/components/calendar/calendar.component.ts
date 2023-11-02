@@ -32,11 +32,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
           this.fetchScheduleData();
         })
     }, 0);
-
-
-
-
-
   }
 
   fetchScheduleData() {
@@ -72,7 +67,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           item.weekday.name === day && item.time.start === timeSlot
       );
       if (schedule) {
-        const { auditory, subject, teacher, type } = schedule;
+        const { auditory, subject, teacher, type, weeks } = schedule;
         const subjectFull = subject ? subject.full : "";
         const subjectAbbr = subject ? subject.abbreviated : "";
         const teacherFullName = teacher ? teacher.fullName : "";
@@ -80,6 +75,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         const typeAbbr = type ? type.abbreviated : "";
 
         const result = {
+          weeks,
           subjectAbbr,
           auditory,
           subjectFull,

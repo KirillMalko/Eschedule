@@ -11,10 +11,10 @@ export class ScheduleService {
   getGroup(): string {
     return this._group;
   }
-  getType(): string[] | undefined {
+  getType(): string | undefined {
     return this._type;
   }
-  getSubgroup(): number | undefined {
+  getSubgroup(): string | undefined {
     return this._subgroup;
   }
   getWeeks(): string[] | undefined {
@@ -27,8 +27,8 @@ export class ScheduleService {
   private dataUrl = new BehaviorSubject<string>('');
   fullUrl$ = this.dataUrl.asObservable();
   private _group!: string;
-  private _subgroup: number| undefined;
-  private _type: string[]| undefined;
+  private _subgroup: string| undefined;
+  private _type: string | undefined;
   private _weeks: string[] | undefined;
   private _weekdays: number[] = [1,2,3,4,5];
 
@@ -40,11 +40,11 @@ export class ScheduleService {
     this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
 
   }
-  setType(value: string[] | undefined) {
+  setType(value: string | undefined) {
     this._type = value;
     this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
   }
-  setSubgroup(value: number | undefined) {
+  setSubgroup(value: string | undefined) {
     this._subgroup = value;
     this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
   }
@@ -53,13 +53,18 @@ export class ScheduleService {
     this.setSchedule(this.getGroup(),  this.getSubgroup(),  this.getType(), this.getWeeks(), this.getWeekdays())
   }
 
-  setSchedule(group: string, subgroup: number | undefined, type: string[] | undefined, weeks: string[] | undefined, weekdays: number[]){
+  setSchedule(group: string, subgroup: string | undefined, type: string | undefined, weeks: string[] | undefined, weekdays: number[]){
     const baseUrl = 'https://schedule.elementfx.com/api/v1/schedule/group';
     const encodedGroup = encodeURIComponent(group ? group : 'СП091');
-    const encodedType = Array.isArray(type) && type.length > 0 ? `type=${encodeURIComponent(type.join(', '))}` : '';    const encodedWeeks = Array.isArray(weeks) && weeks.length > 0 ? weeks.map(w => `weeks[]=${encodeURIComponent(w.toString())}`).join('&') : '';
+    const encodedSubgroup = Array.isArray(subgroup) && subgroup.length > 1 ? '' : subgroup ? `subgroup=${encodeURIComponent(subgroup)}` : '';
+    const encodedType = Array.isArray(type) && type.length > 1 ? '' : type ? `type=${encodeURIComponent(type)}` : '';
+    const encodedWeeks = Array.isArray(weeks) && weeks.length > 0 ? weeks.map(w => `weeks[]=${encodeURIComponent(w.toString())}`).join('&') : '';
     const encodedWeekdays = Array.isArray(weekdays) && weekdays.length > 0 ? weekdays.map(d => `weekdays[]=${encodeURIComponent(d.toString())}`).join('&') : '';
 
     let url = `${baseUrl}?group=${encodedGroup}`;
+    if (subgroup) {
+      url += `&${encodedSubgroup}`;
+    }
     if (encodedType) {
       url += `&${encodedType}`;
     }

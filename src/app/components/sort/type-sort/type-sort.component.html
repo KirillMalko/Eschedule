@@ -4,13 +4,15 @@
 
 
 
- <p *ngFor="let subtask of task.subtasks">
-        <mat-checkbox [(ngModel)]="subtask.completed"
-                      [color]="subtask.color"
-                      (ngModelChange)="updateAllComplete()">
-          {{subtask.name}}
-        </mat-checkbox>
-      </p>
+<p *ngFor="let subtask of task.subtasks">
+  <mat-checkbox
+    [(ngModel)]="subtask.completed"
+    [color]="subtask.color"
+    (ngModelChange)="updateSelectedType(subtask.name)"
+  >
+    {{ subtask.name }}
+  </mat-checkbox>
+</p>
                 <mat-checkbox
                         (click)="updateAllComplete()"
                         [(ngModel)]="task.completed"
